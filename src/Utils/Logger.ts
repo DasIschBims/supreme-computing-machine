@@ -11,7 +11,7 @@ class Logger {
 
     static error(description: string, message: unknown): void {
         console.log(`${chalk.bold(`[${chalk.red("ERROR")}]`)} [${Logger.getTime()}] ${description}`);
-        console.error(message)
+        console.error(message);
     }
 
     static info(message: string): void {

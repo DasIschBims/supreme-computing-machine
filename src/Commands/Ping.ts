@@ -21,7 +21,7 @@ export default {
                 ]
             });
         } catch (error) {
-            Logger.error("An error occurred during the \"Ping\" command", error)
+            Logger.error("An error occurred during the \"Ping\" command", error);
             return interaction.reply("0");
         }
     },

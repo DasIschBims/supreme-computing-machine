@@ -3,4 +3,4 @@ import { ChatInputCommandInteraction, CommandInteraction, InteractionResponse, S
 export default interface Command {
     data: SlashCommandBuilder;
     execute: (interaction: ChatInputCommandInteraction | CommandInteraction) => Promise<InteractionResponse<boolean>>;
-}
+};

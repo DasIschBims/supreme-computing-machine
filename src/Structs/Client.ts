@@ -12,7 +12,6 @@ import {EventType} from "@/src/Interfaces/Event.ts";
 import Logger from "@/src/Utils/Logger.ts";
 import * as fs from "fs";
 import * as path from "path";
-import logger from "@/src/Utils/Logger.ts";
 
 export class ExtendedClient extends Client {
     public commands: Collection<string, Command> = new Collection<string, Command>();
@@ -41,14 +40,14 @@ export class ExtendedClient extends Client {
             await this.rest.put(
                 Routes.applicationCommands(process.env.DISCORD_CLIENT_ID),
                 { body: commands }
-            )
+            );
         } catch (error) {
             Logger.error(`An error occurred while trying to register the slash commands`, error);
         }
     }
 
     private registerModules() {
-        const commandsDir = __dirname + "/../Commands"
+        const commandsDir = __dirname + "/../Commands";
         const commandFiles = fs.readdirSync(commandsDir).filter((file) => file.endsWith('.ts'));
 
         Promise.all(
@@ -58,17 +57,17 @@ export class ExtendedClient extends Client {
                 const command = commandImport.default;
                 this.commands.set(command.data.name, command);
                 this.commandsJSON.push(command.data.toJSON());
-                Logger.info(`Successfully loaded command: ${command.data.name}`)
+                Logger.info(`Successfully loaded command: ${command.data.name}`);
             })
         )
             .then(async () => {
-                await this.registerCommands(this.commandsJSON)
+                await this.registerCommands(this.commandsJSON);
             })
             .catch((e) => Logger.error("An error occurred while loading Commands", e));
     }
 
     private registerEvents(){
-        const eventsDir = __dirname + "/../Events"
+        const eventsDir = __dirname + "/../Events";
         const eventFiles = fs.readdirSync(eventsDir).filter((file) => file.endsWith('.ts'));
 
         Promise.all(
@@ -80,14 +79,14 @@ export class ExtendedClient extends Client {
                 try {
                     if (name) (once) ? this.once(name, run) : this.on(name, run);
                     this.events.set(name, { name, once, run });
-                    Logger.info(`Successfully loaded event: ${name}`)
+                    Logger.info(`Successfully loaded event: ${name}`);
                 } catch (error) {
                     Logger.error(`An error occurred while trying to load the ${name} event`, error);
                 }
             })
         )
             .then(async () => {
-                await this.registerCommands(this.commandsJSON)
+                await this.registerCommands(this.commandsJSON);
             })
             .catch((e) => Logger.error("An error occurred while loading Events", e));
     }
