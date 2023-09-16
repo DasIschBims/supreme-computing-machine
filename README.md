@@ -1,4 +1,4 @@
-# hansbot
+# supreme-computing-machine
 
 To install dependencies:
 
