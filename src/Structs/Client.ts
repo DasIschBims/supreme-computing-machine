@@ -3,13 +3,13 @@ import {
     Client,
     ClientEvents,
     Collection,
-    GatewayIntentBits,
+    IntentsBitField,
     Partials,
     Routes
 } from "discord.js";
 import Command from "@/src/Interfaces/Command.ts";
 import {EventType} from "@/src/Interfaces/Event.ts";
-import Logger from "@/src/Utils/Logger.ts";
+import Logger from "@/src/Utils/Logging/Logger.ts";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -20,8 +20,20 @@ export class ExtendedClient extends Client {
 
     constructor() {
         super({
-            intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages],
-            partials: [Partials.Message, Partials.User, Partials.GuildMember]
+            intents: [
+                new IntentsBitField([
+                    IntentsBitField.Flags.Guilds,
+                    IntentsBitField.Flags.GuildMessages,
+                    IntentsBitField.Flags.MessageContent,
+                    IntentsBitField.Flags.GuildMembers,
+                ])
+            ],
+            partials: [
+                Partials.Message,
+                Partials.Channel,
+                Partials.GuildMember,
+                Partials.User,
+            ],
         });
     }
 
@@ -39,7 +51,7 @@ export class ExtendedClient extends Client {
         try {
             await this.rest.put(
                 Routes.applicationCommands(process.env.DISCORD_CLIENT_ID),
-                { body: commands }
+                {body: commands}
             );
         } catch (error) {
             Logger.error(`An error occurred while trying to register the slash commands`, error);
@@ -66,19 +78,19 @@ export class ExtendedClient extends Client {
             .catch((e) => Logger.error("An error occurred while loading Commands", e));
     }
 
-    private registerEvents(){
+    private registerEvents() {
         const eventsDir = __dirname + "/../Events";
         const eventFiles = fs.readdirSync(eventsDir).filter((file) => file.endsWith('.ts'));
 
         Promise.all(
             eventFiles.map(async (file) => {
                 const filePath = path.join(eventsDir, file);
-                const { name, once, run }: EventType<keyof ClientEvents> = (await import(filePath))?.default ?? {};
+                const {name, once, run}: EventType<keyof ClientEvents> = (await import(filePath))?.default ?? {};
                 if (!name || !run) return;
 
                 try {
                     if (name) (once) ? this.once(name, run) : this.on(name, run);
-                    this.events.set(name, { name, once, run });
+                    this.events.set(name, {name, once, run});
                     Logger.info(`Successfully loaded event: ${name}`);
                 } catch (error) {
                     Logger.error(`An error occurred while trying to load the ${name} event`, error);

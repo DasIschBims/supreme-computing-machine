@@ -1,5 +1,5 @@
 import {ExtendedClient} from "@/src/Structs/Client.ts";
-import Logger from "@/src/Utils/Logger.ts";
+import Logger from "@/src/Utils/Logging/Logger.ts";
 
 export const client = new ExtendedClient();
 

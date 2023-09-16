@@ -1,11 +1,10 @@
 import {Event} from "../Interfaces/Event.ts";
-import Logger from "@/src/Utils/Logger.ts";
+import Logger from "@/src/Utils/Logging/Logger.ts";
 
-const apiKey = process.env.OPENAI_KEY;
 export default new Event({
     name: "messageCreate",
     once: false,
-    async run(interaction) {
-        Logger.info(`${interaction.author.displayName} said ${interaction.content}`);
+    async run(message) {
+        if (!message.content.includes("<@972118778353709136>")) return;
     },
 });

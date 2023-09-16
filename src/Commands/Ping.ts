@@ -4,8 +4,8 @@ import {
     SlashCommandBuilder,
 } from 'discord.js';
 import Command from "@/src/Interfaces/Command.ts";
-import {getRandomColor} from "@/src/Utils/RandomColor.ts";
-import Logger from "@/src/Utils/Logger.ts";
+import {getRandomColor} from "@/src/Utils/Misc/RandomColor.ts";
+import Logger from "@/src/Utils/Logging/Logger.ts";
 
 export default {
     data: new SlashCommandBuilder().setName("ping").setDescription("Ping the bot"),
